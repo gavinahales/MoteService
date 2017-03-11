@@ -57,7 +57,28 @@ def setmotereq():
                 # setmote: Change the colour of the motes specified in the JSON request.
                 # moteoff: Turn all motes off.
                 if moterequest['requesttype'] == "setmote":
-                    return "Accepted but not implemented."
+
+                    # Catch any errors in case JSON is not correct or setting
+                    # mote fails
+                    try:
+                        channels = moterequest['channels']
+                        red = moterequest['red']
+                        green = moterequest['green']
+                        blue = moterequest['blue']
+                        setmote(channels, red, green, blue)
+                        retdata = {'MoteReply': {
+                            'status': '1'}}
+                        return json.jsonify(retdata)
+
+                    # If this doesn't work, catch the Exception
+                    # TODO: Change the exception type to something more
+                    # specific
+                    except Exception:
+                        retdata = {'MoteReply': {
+                            'status': '0',
+                            'error': 'Setting mote lights failed.'}}
+                        return json.jsonify(retdata)
+
                 elif moterequest['requesttype'] == "moteoff":
                     if mote is None:
                         retdata = {'MoteReply': {
