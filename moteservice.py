@@ -48,12 +48,24 @@ def setmotereq():
             # Do something with the incoming JSON
             parsedjson = request.json
 
-            ##NEEDS SOME COMMENTING
+            # Try to parse the incoming JSON request.
+            # The JSON object must be a MoteRequest.
             try:
                 moterequest = parsedjson['MoteRequest']
 
+                # Check what the requesttype field is set to, and respind in the following ways:
+                # setmote: Change the colour of the motes specified in the JSON request.
+                # moteoff: Turn all motes off.
                 if moterequest['requesttype'] == "setmote":
                     return "Accepted but not implemented."
+                elif moterequest['requesttype'] == "moteoff":
+                    if mote is None:
+                        retdata = {'MoteReply': {
+                            'status': '0',
+                            'error': 'Mote device not connected.'}}
+                    else:
+                        moteoff()
+                    return json.jsonify(retdata)
                 else:
                     retdata = {'MoteReply': {
                         'status': '0',
