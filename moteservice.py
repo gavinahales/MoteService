@@ -3,6 +3,13 @@ from mote import Mote
 
 app = Flask(__name__)
 
+#Preset colours, colour tuples follow format (r, g, b, altr, altg, altb).
+#Alt colours are used to create strips with 2 alternating colours.
+#Set alt values to same if only single colour wanted.
+COLOURPRESETS = {'lightblue':(0, 191, 255, 0, 191, 255),
+                 'sunset':(255, 218, 185, 255, 218, 185)
+                }
+
 # Try connecting to the Mote, but make sure it fails gracefully.
 try:
     mote = Mote()
@@ -14,7 +21,7 @@ try:
 except IOError:
     mote = None
 
-
+#Change the colour of the Mote.
 def setmote(channels, red, green, blue):
     mote.clear()
     for channel in channels:
@@ -22,25 +29,28 @@ def setmote(channels, red, green, blue):
             mote.set_pixel(channel, pixel, red, green, blue)
     mote.show()
 
-
+#Turn the Mote off completely.
 def moteoff():
     mote.clear()
     mote.show()
 
-
+#Check the current status of the Mote.
 @app.route('/motestatus/', methods=['GET'])
 def motestatusreq():
     if request.method == 'GET':
         # TO BE IMPLEMENTED
         if mote is None:
-            return 'Mote device not connected.'
+            retdata = {'MoteReply': {
+                'status': '0',
+                'error': 'Mote device has not been connected. Try calling connectmote.'}}
+            return json.jsonify(retdata)
         else:
             # Can do this using mote.get_pixel()
             return 'This will return the current status of the lights.'
     else:
         abort(405)
 
-
+#Set the colour of the Mote strips.
 @app.route('/setmote/', methods=['POST'])
 def setmotereq():
     if request.method == 'POST':
@@ -86,6 +96,8 @@ def setmotereq():
                             'error': 'Mote device not connected.'}}
                     else:
                         moteoff()
+                        retdata = {'MoteReply': {
+                            'status': '1'}}
                     return json.jsonify(retdata)
                 else:
                     retdata = {'MoteReply': {
@@ -106,14 +118,19 @@ def setmotereq():
     else:
         abort(405)
 
-
+#Try and connect to the Mote. Used if the initial connection fails.
 @app.route('/connectmote/', methods=['GET, POST'])
 def connectmote():
     try:
         mote = Mote()
+        retdata = {'MoteReply': {
+            'status': '1'}}
     except IOError:
         mote = None
-        return 'Mote device not found. Connect failed.'
+        retdata = {'MoteReply': {
+            'status': '0',
+            'error': 'Mote device failed to connect. Check device is physically connected and try again.'}}
+        return json.jsonify(retdata)
 
 
 # USED FOR DEVELOPMENT ON WINDOWS ONLY. REMOVE WHEN COMPLETE
