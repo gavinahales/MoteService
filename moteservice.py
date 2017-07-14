@@ -7,7 +7,8 @@ app = Flask(__name__)
 #Alt colours are used to create strips with 2 alternating colours.
 #Set alt values to same if only single colour wanted.
 COLOURPRESETS = {'lightblue':(0, 191, 255, 0, 191, 255),
-                 'sunset':(255, 218, 185, 255, 218, 185)
+                 'sunset':(255, 218, 185, 255, 218, 185),
+                 'lava':(255, 0, 0, 255, 128, 0)
                 }
 
 # Try connecting to the Mote, but make sure it fails gracefully.
@@ -27,6 +28,35 @@ def setmote(channels, red, green, blue):
     for channel in channels:
         for pixel in range(0, 16):
             mote.set_pixel(channel, pixel, red, green, blue)
+    mote.show()
+
+
+def setmotepreset(channels, preset, channelalt):
+    """Change the colour to a preset."""
+
+    colours = COLOURPRESETS[preset]
+    prired = colours[0]
+    prigreen = colours[1]
+    priblue = colours[2]
+    altred = colours[3]
+    altgreen = colours[4]
+    altblue = colours[5]
+
+    mote.clear()
+    if channelalt is True:
+        for channel in channels:
+            for pixel in range(0, 16):
+                if channel % 2 == 0:
+                    mote.set_pixel(channel, pixel, prired, prigreen, priblue)
+                else:
+                    mote.set_pixel(channel, pixel, altred, altgreen, altblue)
+    else:
+        for channel in channels:
+            for pixel in range(0, 16):
+                if pixel % 2 == 0:
+                    mote.set_pixel(channel, pixel, prired, prigreen, priblue)
+                else:
+                    mote.set_pixel(channel, pixel, altred, altgreen, altblue)
     mote.show()
 
 #Turn the Mote off completely.
@@ -63,8 +93,9 @@ def setmotereq():
             try:
                 moterequest = parsedjson['MoteRequest']
 
-                # Check what the requesttype field is set to, and respind in the following ways:
+                # Check what the requesttype field is set to, and respond in the following ways:
                 # setmote: Change the colour of the motes specified in the JSON request.
+                # motepreset: Change the colour to a preset.
                 # moteoff: Turn all motes off.
                 if moterequest['requesttype'] == "setmote":
 
@@ -83,6 +114,29 @@ def setmotereq():
                     # If this doesn't work, catch the Exception
                     # TODO: Change the exception type to something more
                     # specific
+                    except Exception:
+                        retdata = {'MoteReply': {
+                            'status': '0',
+                            'error': 'Setting mote lights failed.'}}
+                        return json.jsonify(retdata)
+
+                elif moterequest['requesttype'] == "motepreset":
+                    try:
+                        channels = moterequest['channels']
+                        preset = moterequest['preset']
+                        try:
+                            if moterequest['channelalt'] is True:
+                                channelalt = True
+                            else:
+                                channelalt = False
+                        #If the user doesn't specify anything, default to pixel alternation
+                        except KeyError:
+                            channelalt = False
+                        setmotepreset(channels, preset, channelalt)
+                        retdata = {'MoteReply': {
+                            'status': '1'}}
+                        return json.jsonify(retdata)
+                    #TODO: Refine error handling
                     except Exception:
                         retdata = {'MoteReply': {
                             'status': '0',
