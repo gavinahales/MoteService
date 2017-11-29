@@ -1,0 +1,89 @@
+<!--- Basic page for testing a Mote install. Development use only. -->
+<!DOCTYPE html>
+
+
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <title>Mote Test Application</title>
+
+    <script type="text/javascript">
+        function presetSubmit()
+        {
+
+            var chanarray = []
+
+            if($('#prech1:checked').val() != undefined) {chanarray.push(1)}
+            if($('#prech2:checked').val() != undefined) {chanarray.push(2)}
+            if($('#prech3:checked').val() != undefined) {chanarray.push(3)}
+            if($('#prech4:checked').val() != undefined) {chanarray.push(4)}
+
+            console.log(chanarray)
+
+            var moteData = {"MoteRequest":
+	            {"requesttype":"motepreset",
+	            "channels":chanarray,
+	            "preset": $('#presetselect').val()
+	            }           
+            };
+
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "http://127.0.0.1:5000/setmote/",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: moteData,
+                }
+            )
+        }
+
+        function customSubmit()
+        {
+
+        }
+    
+    </script>
+
+</head>
+
+
+<body>
+
+    <h1>Mote Test App</h1>
+    <hr>
+    <p>Preset:</p>
+    <select id="presetselect">
+        <option value="lightblue">Light Blue</option>
+        <option value="sunset">Sunset</option>
+        <option value="lava">Lava</option>
+    </select>
+    <br>
+    <br>
+    <fieldset id="prechan">
+        <legend>Channels</legend>
+        <input type="checkbox" id="prech1" value=1>
+        <label for="prech1">Ch 1</label>
+        <input type="checkbox" id="prech2" value=2>
+        <label for="prech1">Ch 2</label>
+        <input type="checkbox" id="prech3" value=3>
+        <label for="prech1">Ch 3</label>
+        <input type="checkbox" id="prech4" value=4>
+        <label for="prech1">Ch 4</label>
+    </fieldset>
+    <br>
+    <button onclick="presetSubmit()">Test Button</button>
+    <hr>
+    <p>Custom Colour:</p>
+    <p>TBC</p>
+
+
+
+</body>
+
+</html>
