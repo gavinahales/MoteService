@@ -1,7 +1,11 @@
 from flask import Flask, request, abort, json
 from mote import Mote
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+#Disables CORS checking to make things easy. This app isn't handling sensitive data.
+CORS(app)
 
 #Preset colours, colour tuples follow format (r, g, b, altr, altg, altb).
 #Alt colours are used to create strips with 2 alternating colours.
