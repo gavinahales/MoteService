@@ -35,10 +35,10 @@
             $.ajax(
                 {
                     type: "POST",
-                    url: "http://127.0.0.1:5000/setmote/",
+                    url: "http://127.0.0.1:5000/moteset/",
                     dataType: "json",
                     contentType: "application/json",
-                    data: moteData,
+                    data: JSON.stringify(moteData)
                 }
             )
         }
@@ -46,6 +46,23 @@
         function customSubmit()
         {
 
+        }
+
+        function turnOffMotes()
+        {
+            var moteData = {"MoteRequest":
+	            {"requesttype":"moteoff"}           
+            };
+
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "http://127.0.0.1:5000/moteset/",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(moteData)
+                }
+            )
         }
     
     </script>
@@ -60,8 +77,10 @@
     <p>Preset:</p>
     <select id="presetselect">
         <option value="lightblue">Light Blue</option>
-        <option value="sunset">Sunset</option>
         <option value="lava">Lava</option>
+        <option value="brightwhite">Bright White</option>
+        <option value="warmwhite">Warm White</option>
+        <option value="dimwarmwhite">Dim Warm White</option>
     </select>
     <br>
     <br>
@@ -77,7 +96,8 @@
         <label for="prech1">Ch 4</label>
     </fieldset>
     <br>
-    <button onclick="presetSubmit()">Test Button</button>
+    <button onclick="presetSubmit()">Turn On Lights / Set Colour</button>
+    <button onclick="turnOffMotes()">Turn Off Lights</button>
     <hr>
     <p>Custom Colour:</p>
     <p>TBC</p>

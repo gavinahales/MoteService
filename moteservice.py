@@ -11,8 +11,10 @@ CORS(app)
 #Alt colours are used to create strips with 2 alternating colours.
 #Set alt values to same if only single colour wanted.
 COLOURPRESETS = {'lightblue':(0, 191, 255, 0, 191, 255),
-                 'sunset':(255, 218, 185, 255, 218, 185),
-                 'lava':(255, 0, 0, 255, 128, 0)
+                 'lava':(255, 0, 0, 255, 128, 0),
+                 'brightwhite':(255,255,255,255,255,255),
+                 'warmwhite':(249,160,42,249,160,42),
+                 'dimwarmwhite':(249,160,42,0,0,0)
                 }
 
 # Try connecting to the Mote, but make sure it fails gracefully.
@@ -85,7 +87,7 @@ def motestatusreq():
         abort(405)
 
 #Set the colour of the Mote strips.
-@app.route('/setmote/', methods=['POST'])
+@app.route('/moteset/', methods=['POST'])
 def setmotereq():
     if request.method == 'POST':
         if request.headers['Content-Type'] == 'application/json':
@@ -101,7 +103,7 @@ def setmotereq():
                 # setmote: Change the colour of the motes specified in the JSON request.
                 # motepreset: Change the colour to a preset.
                 # moteoff: Turn all motes off.
-                if moterequest['requesttype'] == "setmote":
+                if moterequest['requesttype'] == "moteset":
 
                     # Catch any errors in case JSON is not correct or setting
                     # mote fails
@@ -177,7 +179,7 @@ def setmotereq():
         abort(405)
 
 #Try and connect to the Mote. Used if the initial connection fails.
-@app.route('/connectmote/', methods=['GET, POST'])
+@app.route('/moteconnect/')
 def connectmote():
     try:
         mote = Mote()
