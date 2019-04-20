@@ -14,10 +14,13 @@
     <title>Mote Test Application</title>
 
     <script type="text/javascript">
+
+        const SERVERADDR = "http://127.0.0.1:5000";
+
         function presetSubmit()
         {
 
-            var chanarray = []
+            var chanarray = [];
 
             if($('#prech1:checked').val() != undefined) {chanarray.push(1)}
             if($('#prech2:checked').val() != undefined) {chanarray.push(2)}
@@ -36,7 +39,7 @@
             $.ajax(
                 {
                     type: "POST",
-                    url: "http://127.0.0.1:5000/moteset/",
+                    url: SERVERADDR+"/moteset/",
                     dataType: "json",
                     contentType: "application/json",
                     data: JSON.stringify(moteData)
@@ -47,7 +50,7 @@
         function customSubmit()
         {
 
-            var chanarray = []
+            var chanarray = [];
 
             if($('#prech1:checked').val() != undefined) {chanarray.push(1)}
             if($('#prech2:checked').val() != undefined) {chanarray.push(2)}
@@ -69,7 +72,7 @@
             $.ajax(
                 {
                     type: "POST",
-                    url: "http://127.0.0.1:5000/moteset/",
+                    url: SERVERADDR+"/moteset/",
                     dataType: "json",
                     contentType: "application/json",
                     data: JSON.stringify(moteData)
@@ -86,7 +89,7 @@
             $.ajax(
                 {
                     type: "POST",
-                    url: "http://127.0.0.1:5000/moteset/",
+                    url: SERVERADDR+"/moteset/",
                     dataType: "json",
                     contentType: "application/json",
                     data: JSON.stringify(moteData)
