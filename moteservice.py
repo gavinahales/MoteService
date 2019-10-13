@@ -143,6 +143,11 @@ def setmotereq():
                             'status': '1'}}
                         return json.jsonify(retdata)
                     #TODO: Refine error handling
+                    except KeyError:
+                        retdata = {'MoteReply': {
+                            'status': '0',
+                            'error': 'That preset colour is not recognised.'}}
+                        return json.jsonify(retdata)
                     except Exception:
                         retdata = {'MoteReply': {
                             'status': '0',
